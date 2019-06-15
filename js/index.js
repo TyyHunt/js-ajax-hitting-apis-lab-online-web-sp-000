@@ -25,3 +25,47 @@ function getRepositories() {
  			).join('')}</ul>`;
  		document.getElementById('repositories').innerHTML = repoList;
  }
+
+ function getCommits(el) {
+	const repoName = el.dataset.repository;
+	const uri = 'https://api.github.com' + '/repos/' + el.dataset.username + '/' + repoName + '/commits';
+	const xhr = new XMLHttpRequest();
+	xhr.addEventListener('load', displayCommits);
+	xhr.open('GET', uri)
+	xhr.send();
+}
+
+function displayCommits() {
+  const commits = JSON.parse(this.responseText);
+  const commitsList = `<ul>${commits
+    .map(
+      commit =>
+        '<li>' +
+        commit.commit.author.name +
+        ' (' +
+        commit.author.login +
+        ')' +
+        commit.commit.message +
+        '</li>'
+    )
+    .join('')}</ul>`;
+  document.getElementById('details').innerHTML = commitsList;
+}
+
+function getBranches(el) {
+  const repoName = el.dataset.repository;
+  const uri =
+    'https://api.github.com' + '/repos/' + el.dataset.username + '/' + repoName + '/branches';
+  const xhr = new XMLHttpRequest();
+  xhr.addEventListener('load', displayBranches);
+  xhr.open('GET', uri);
+  xhr.send();
+}
+
+function displayBranches() {
+  const branches = JSON.parse(this.responseText);
+  const branchesList = `<ul>${branches
+    .map(branch => '<li>' + branch.name + '</li>')
+    .join('')}</ul>`;
+  document.getElementById('details').innerHTML = branchesList;
+}
